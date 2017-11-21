@@ -1,0 +1,226 @@
+{
+  "definitions": {
+    "PrivatePropertyUnit": {
+      "properties": {
+        "property": {
+          "properties": {
+            "amenities_list": {
+              "items": {
+                "default": [
+                  "building__has_leed_certified"
+                ], 
+                "description": "list of amenities", 
+                "type": "string"
+              }, 
+              "type": "array"
+            }, 
+            "lat": {
+              "default": 41.88666, 
+              "format": "float", 
+              "maximum": 90.0, 
+              "minimum": -90.0, 
+              "type": "number"
+            }, 
+            "lon": {
+              "default": -87.63147, 
+              "format": "float", 
+              "maximum": 180.0, 
+              "minimum": -180.0, 
+              "type": "integer"
+            }, 
+            "number_units": {
+              "default": 100, 
+              "maximum": 4000, 
+              "minimum": 1, 
+              "type": "integer"
+            }, 
+            "units": {
+              "items": {
+                "description": "Unit data", 
+                "properties": {
+                  "amenities_list": {
+                    "items": {
+                      "default": [
+                        "unit__has_stainless_steel_appliances"
+                      ], 
+                      "description": "list of amenities", 
+                      "type": "string"
+                    }, 
+                    "type": "array"
+                  }, 
+                  "bath": {
+                    "default": 1, 
+                    "format": "int32", 
+                    "maximum": 4, 
+                    "minimum": 1, 
+                    "type": "integer"
+                  }, 
+                  "bed": {
+                    "default": 2, 
+                    "format": "int32", 
+                    "maximum": 4, 
+                    "minimum": 0, 
+                    "type": "integer"
+                  }, 
+                  "count": {
+                    "default": 2, 
+                    "format": "int32", 
+                    "maximum": 999, 
+                    "minimum": 1, 
+                    "type": "integer"
+                  }, 
+                  "sqft": {
+                    "default": 1200, 
+                    "minimum": 100, 
+                    "type": "integer"
+                  }
+                }, 
+                "required": [
+                  "count", 
+                  "bed", 
+                  "bath", 
+                  "sqft", 
+                  "amenities_list"
+                ], 
+                "type": "object"
+              }, 
+              "type": "array"
+            }, 
+            "year_built": {
+              "default": 1900, 
+              "maximum": 2020, 
+              "minimum": 1600, 
+              "type": "integer"
+            }, 
+            "year_renovated": {
+              "default": 2000, 
+              "maximum": 2020, 
+              "minimum": 1960, 
+              "type": [
+                "integer", 
+                "null"
+              ]
+            }
+          }, 
+          "required": [
+            "year_built", 
+            "lat", 
+            "lon", 
+            "amenities_list", 
+            "number_units", 
+            "units"
+          ], 
+          "type": "object"
+        }
+      }, 
+      "required": [
+        "property"
+      ], 
+      "type": "object"
+    }
+  }, 
+  "host": "dev-api.enodoinc.com", 
+  "info": {
+    "contact": {
+      "url": "enodoinc.com"
+    }, 
+    "description": "API for managing your portfolio and analysing it", 
+    "title": "Enodo API", 
+    "version": null
+  }, 
+  "paths": {
+    "/private/predictive/comparables": {
+      "post": {
+        "description": "Given a property as well as its units, EnodoInc can predict a sample of comparable properties in the market.", 
+        "parameters": [
+          {
+            "in": "header", 
+            "name": "Authorization", 
+            "required": true, 
+            "type": "string"
+          }, 
+          {
+            "default": "application/json", 
+            "in": "header", 
+            "name": "Content-Type", 
+            "required": true, 
+            "type": "string"
+          }, 
+          {
+            "in": "body", 
+            "name": "body", 
+            "required": true, 
+            "schema": {
+              "$ref": "#/definitions/PrivatePropertyUnit"
+            }
+          }
+        ], 
+        "responses": {
+          "200": {
+            "description": "Prediction"
+          }, 
+          "400": {
+            "description": "Bad request"
+          }, 
+          "401": {
+            "description": "Unauthorized"
+          }
+        }, 
+        "summary": "Identify comparables", 
+        "tags": [
+          "private"
+        ]
+      }
+    }, 
+    "/private/predictive/predict_rent": {
+      "post": {
+        "description": "Use EnodoInc models to predict the expected rent of a list of units.", 
+        "parameters": [
+          {
+            "in": "header", 
+            "name": "Authorization", 
+            "required": true, 
+            "type": "string"
+          }, 
+          {
+            "default": "application/json", 
+            "in": "header", 
+            "name": "Content-Type", 
+            "required": true, 
+            "type": "string"
+          }, 
+          {
+            "in": "body", 
+            "name": "body", 
+            "required": true, 
+            "schema": {
+              "$ref": "#/definitions/PrivatePropertyUnit"
+            }
+          }
+        ], 
+        "responses": {
+          "200": {
+            "description": "Given a property, predict the price"
+          }, 
+          "202": {
+            "description": "Warming up models, retry in 10 seconds"
+          }, 
+          "400": {
+            "description": "Bad request"
+          }, 
+          "401": {
+            "description": "Unauthorized"
+          }
+        }, 
+        "summary": "Unit Pricing", 
+        "tags": [
+          "private"
+        ]
+      }
+    }
+  }, 
+  "schemes": [
+    "https"
+  ], 
+  "swagger": "2.0"
+}
